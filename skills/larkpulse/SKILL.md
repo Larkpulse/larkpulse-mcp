@@ -23,14 +23,15 @@ Generic config:
 
 - Claude (web/desktop): Settings -> Connectors -> Add custom connector -> paste the endpoint -> Connect and approve.
 - Claude Code: `claude mcp add --transport http larkpulse https://app.larkpulse.com/api/mcp`
-- ChatGPT: enable Developer mode -> Apps -> Create app -> Server URL = endpoint, Authentication = OAuth -> Sign in with Larkpulse.
+- ChatGPT (web): Plugins (chatgpt.com/plugins) -> + -> Add custom MCP server -> name, Server URL = endpoint, Authentication = OAuth -> accept the risk warning -> Create as a plugin -> Sign in with Larkpulse. Full access needs a Business or Enterprise/Edu workspace whose admin allows custom MCP servers; Pro accounts connect read-only.
 - Perplexity: Settings -> Connectors -> add a custom MCP connector -> paste -> authorize.
-- OpenClaw (CLI): run in a real interactive terminal (OAuth opens a browser):
+- OpenClaw (CLI): stop the Gateway first (adding a server needs it stopped), then run in a real interactive terminal:
   ```bash
   openclaw mcp add larkpulse --url https://app.larkpulse.com/api/mcp --transport streamable-http --auth oauth
+  openclaw mcp login larkpulse            # OAuth sign-in (opens a browser)
   openclaw mcp doctor larkpulse --probe   # verify + prove the tools load
-  openclaw mcp reload                     # apply (no hot-reload)
   ```
+  Then start the Gateway again (or a new session) so the agent picks up the tools.
 - Hermes (CLI): run in a real interactive terminal (OAuth opens a browser, then pick which tools to enable):
   ```bash
   hermes mcp add larkpulse --url https://app.larkpulse.com/api/mcp --auth oauth
@@ -235,4 +236,4 @@ Notes:
 - "Monthly MCP quota reached" — the workspace has used this month's MCP actions; the count resets at the start of next month. Tell the user, don't retry.
 - "MCP access requires a Larkpulse Pro plan or above" — the workspace owner's plan doesn't include MCP. Tell the user; don't suggest plans or pricing.
 - "Insufficient AI credits" on generate/Magic Adapt — the user needs credits or an OpenRouter key in Settings → Billing.
-- ChatGPT "storage host couldn't be reached" or a local `/mnt/data` path — follow [`agents/chatgpt.md`](./agents/chatgpt.md): `upload_media` with `file`, never HTTP PUT. After a Larkpulse deploy, refresh/rescan the ChatGPT app (Apps → Scan Tools).
+- ChatGPT "storage host couldn't be reached" or a local `/mnt/data` path — follow [`agents/chatgpt.md`](./agents/chatgpt.md): `upload_media` with `file`, never HTTP PUT. After a Larkpulse deploy, open the Larkpulse connection in ChatGPT Plugins and select Refresh.

@@ -45,7 +45,7 @@ Generic config for clients that accept `mcpServers`:
 claude mcp add --transport http larkpulse https://app.larkpulse.com/api/mcp
 ```
 
-**ChatGPT:** Settings → Apps → Advanced settings → turn on Developer mode. Click Create app, paste the server URL, set Authentication to OAuth, create the app, then click Sign in with Larkpulse.
+**ChatGPT (web):** open Plugins (chatgpt.com/plugins), click + and choose Add custom MCP server. Name it Larkpulse, paste the server URL under Connection, set authentication to OAuth, accept the risk warning and select Create as a plugin, then click Sign in with Larkpulse. Full access needs a ChatGPT Business or Enterprise/Edu workspace whose admin allows custom MCP servers; Pro accounts connect read-only, so posting tools aren't available.
 
 **Perplexity:** Settings → Connectors → add a custom MCP connector with the server URL and authorize with Larkpulse.
 
@@ -67,13 +67,15 @@ claude mcp add --transport http larkpulse https://app.larkpulse.com/api/mcp
 gemini extensions install https://github.com/larkpulse/larkpulse-mcp
 ```
 
-**OpenClaw** (interactive terminal, sign-in opens a browser):
+**OpenClaw:** stop the Gateway first (adding a server needs it stopped), then run in an interactive terminal (the login step opens a browser):
 
 ```bash
 openclaw mcp add larkpulse --url https://app.larkpulse.com/api/mcp --transport streamable-http --auth oauth
+openclaw mcp login larkpulse
 openclaw mcp doctor larkpulse --probe
-openclaw mcp reload
 ```
+
+Start the Gateway again (or a new session) so the agent picks up the tools. They appear as `mcp_larkpulse_*`.
 
 **Hermes** (interactive terminal):
 
