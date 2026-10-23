@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.larkpulse/mcp",
+  "title": "Larkpulse",
+  "description": "Plan, write, schedule and publish social posts and carousels, and read analytics, from your AI.",
+  "version": "1.1.0",
+  "websiteUrl": "https://www.larkpulse.com/mcp",
+  "repository": {
+    "url": "https://github.com/larkpulse/larkpulse-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://app.larkpulse.com/api/mcp"
+    }
+  ]
+}

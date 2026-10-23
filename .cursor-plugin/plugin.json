@@ -1,0 +1,24 @@
+{
+  "name": "larkpulse",
+  "displayName": "Larkpulse",
+  "version": "1.1.0",
+  "description": "Run your social media from Cursor: plan, write, schedule and publish posts, create images and carousels, read analytics and reply to comments with Larkpulse.",
+  "author": {
+    "name": "Larkpulse",
+    "email": "support@larkpulse.com",
+    "url": "https://www.larkpulse.com"
+  },
+  "homepage": "https://www.larkpulse.com/mcp",
+  "repository": "https://github.com/larkpulse/larkpulse-mcp",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "social media",
+    "scheduling",
+    "linkedin",
+    "instagram",
+    "x",
+    "analytics",
+    "mcp"
+  ]
+}

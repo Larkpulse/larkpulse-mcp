@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "larkpulse": {
+      "url": "https://app.larkpulse.com/api/mcp"
+    }
+  }
+}
