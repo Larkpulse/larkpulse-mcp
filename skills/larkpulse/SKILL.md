@@ -23,7 +23,7 @@ Generic config:
 
 - Claude (web/desktop): Settings -> Connectors -> Add custom connector -> paste the endpoint -> Connect and approve.
 - Claude Code: `claude mcp add --transport http larkpulse https://app.larkpulse.com/api/mcp`
-- ChatGPT (web): Plugins (chatgpt.com/plugins) -> + -> Add custom MCP server -> name, Server URL = endpoint, Authentication = OAuth -> accept the risk warning -> Create as a plugin -> Sign in with Larkpulse. Full access needs a Business or Enterprise/Edu workspace whose admin allows custom MCP servers; Pro accounts connect read-only.
+- ChatGPT (web): Plugins (chatgpt.com/plugins) -> + -> Add custom MCP server -> name, Server URL = endpoint, Authentication = OAuth -> accept the risk warning -> Create as a plugin -> Sign in with Larkpulse. Full access needs a ChatGPT Business or Enterprise/Edu workspace whose admin allows custom MCP servers; ChatGPT Pro accounts connect read-only.
 - Perplexity: Settings -> Connectors -> add a custom MCP connector -> paste -> authorize.
 - OpenClaw (CLI): stop the Gateway first (adding a server needs it stopped), then run in a real interactive terminal:
   ```bash

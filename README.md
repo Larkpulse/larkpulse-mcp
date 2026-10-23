@@ -45,7 +45,7 @@ Generic config for clients that accept `mcpServers`:
 claude mcp add --transport http larkpulse https://app.larkpulse.com/api/mcp
 ```
 
-**ChatGPT (web):** open Plugins (chatgpt.com/plugins), click + and choose Add custom MCP server. Name it Larkpulse, paste the server URL under Connection, set authentication to OAuth, accept the risk warning and select Create as a plugin, then click Sign in with Larkpulse. Full access needs a ChatGPT Business or Enterprise/Edu workspace whose admin allows custom MCP servers; Pro accounts connect read-only, so posting tools aren't available.
+**ChatGPT (web):** open Plugins (chatgpt.com/plugins), click + and choose Add custom MCP server. Name it Larkpulse, paste the server URL under Connection, set authentication to OAuth, accept the risk warning and select Create as a plugin, then click Sign in with Larkpulse. Full access needs a ChatGPT Business or Enterprise/Edu workspace whose admin allows custom MCP servers; ChatGPT Pro accounts connect read-only, so posting tools aren't available.
 
 **Perplexity:** Settings → Connectors → add a custom MCP connector with the server URL and authorize with Larkpulse.
 
