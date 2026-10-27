@@ -200,7 +200,7 @@ Each successful action counts as one MCP call against the workspace owner's mont
 ## Security and privacy
 
 - You sign in with Larkpulse and approve each assistant. It gets the same access you have in your workspaces, nothing more.
-- Access tokens expire after an hour. Revoke any assistant in Larkpulse under Settings → Billing → Connected apps.
+- Access tokens expire after 15 minutes, and your assistant refreshes them in the background. Revoke any assistant in Larkpulse under Settings → Billing → Connected apps.
 - Data your assistant reads is shared with that assistant's provider. See the [AI assistants section of the privacy policy](https://www.larkpulse.com/privacy-policy#ai-assistants) and the [terms of service](https://www.larkpulse.com/terms-of-service).
 
 ## Repository contents
@@ -219,4 +219,4 @@ Each successful action counts as one MCP call against the workspace owner's mont
 
 Email [support@larkpulse.com](mailto:support@larkpulse.com) or use the [contact form](https://www.larkpulse.com/contact).
 
-Last verified: 23 October 2026 · Server version 1.1.0
+Last verified: 27 October 2026 · Server version 1.1.0
