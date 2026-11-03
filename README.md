@@ -152,7 +152,7 @@ Every tool carries MCP annotations (`readOnlyHint`, `destructiveHint`, `idempote
 | `generate_image` | Generate up to 4 AI images, saved to your Media Library. | Changes Larkpulse |
 | `get_image` | Check an image job and get the finished images. | Changes Larkpulse |
 | `list_carousel_options` | Carousel designs, your styles, brand kits and CTAs. | Read |
-| `generate_carousel` | Create a 3 to 9 slide carousel from post text. | Changes Larkpulse |
+| `generate_carousel` | Create a 3 to 9 slide carousel from post text (up to 5 for a Pinterest carousel Pin). | Changes Larkpulse |
 | `get_carousel` | Check a carousel's progress and slides. | Read |
 | `edit_carousel` | Change a carousel in plain language. | Changes Larkpulse |
 

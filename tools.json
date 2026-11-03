@@ -18,7 +18,7 @@
         ]
       }
     ],
-    "version": "1.1.0",
+    "version": "1.2.0",
     "websiteUrl": "https://www.larkpulse.com",
     "endpoint": "https://app.larkpulse.com/api/mcp",
     "transport": "streamable-http",
@@ -919,7 +919,7 @@
     {
       "name": "list_carousel_options",
       "title": "List carousel options",
-      "description": "List what generate_carousel can use in a workspace: suggested designs (style_id), the workspace's own styles (my_style_id), brand kits (brand_preset_id — colors, style and an optional creator signature) and CTAs (cta_preset_id — adds a closing slide), plus the slide-count range. Free (does not count against the monthly quota).",
+      "description": "List what generate_carousel can use in a workspace: suggested designs (style_id), the workspace's own styles (my_style_id), brand kits (brand_preset_id — colors, style and an optional creator signature) and CTAs (cta_preset_id — adds a closing slide), plus the slide-count range, reference limit and roles, and quality options. Free (does not count against the monthly quota).",
       "annotations": {
         "title": "List carousel options",
         "readOnlyHint": true,
@@ -946,7 +946,7 @@
     {
       "name": "generate_carousel",
       "title": "Generate carousel",
-      "description": "Start an AI image carousel (3–9 slides, 4:5) from post text: one consistent design (a suggested style, one of the workspace's own styles, or up to 4 reference_image_urls to match), slide copy written for you, page numbers, optional brand kit signature and closing CTA slide. Returns a carousel id with status \"planning\". Generation takes about a minute: call get_carousel every ~10 seconds until status is \"ready\" (or \"failed\"). When ready, pass carousel.post_args into save_draft / schedule_post / publish_post (images for Instagram, Facebook, Threads, TikTok; a PDF document for LinkedIn). Consumes AI credits.",
+      "description": "Start an AI image carousel (3–9 slides, 4:5) from post text: one consistent design (a suggested style, one of the workspace's own styles, or reference_images with role \"style\" to match), slide copy written for you, optional people / logos / images to feature (reference_images with role character, logo or image; up to 9 references in total, placed with @img1… in brief), page numbers (page_numbers, default on), quality (high or medium), optional brand kit signature and closing CTA slide. Returns a carousel id with status \"planning\". Generation takes about a minute: call get_carousel every ~10 seconds until status is \"ready\" (or \"failed\"). When ready, pass carousel.post_args into save_draft / schedule_post / publish_post (images for Instagram, Facebook, Threads, TikTok; a PDF document for LinkedIn). Consumes AI credits.",
       "annotations": {
         "title": "Generate carousel",
         "readOnlyHint": false,
@@ -974,7 +974,7 @@
             "description": "The post the carousel is made from."
           },
           "slide_count": {
-            "description": "Total slides including the CTA slide (3–9, default 6).",
+            "description": "Total slides including the CTA slide (3–9, default 6). Posting to Pinterest: at most 5 (its carousel Pins take 2–5 images).",
             "type": "integer",
             "minimum": 3,
             "maximum": 9
@@ -991,9 +991,38 @@
             "minLength": 1,
             "maxLength": 100
           },
+          "reference_images": {
+            "description": "Up to 9 references in total, by role. Refer to them in brief as @img1, @img2… in this order (the brand kit's logo, people and style images follow as the next numbers). A PDF must be the only \"style\" reference; its pages fill the room the other references leave.",
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "maxLength": 2048,
+                  "description": "A Larkpulse-hosted image (from upload_media); for role \"style\" also one PDF."
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "style",
+                    "character",
+                    "logo",
+                    "image"
+                  ],
+                  "description": "\"style\": a design to replicate (its look only; its text, logos and people are never copied). \"character\": a person to feature. \"logo\": a logo to place where the brief asks. \"image\": an image to use as slide content (e.g. a product photo)."
+                }
+              },
+              "required": [
+                "url",
+                "role"
+              ]
+            }
+          },
           "reference_image_urls": {
-            "description": "Up to 4 Larkpulse-hosted images, or one PDF (from upload_media), of designs to match for this carousel only. Their text, logos and people are never copied.",
-            "maxItems": 4,
+            "description": "Deprecated: designs to match, as plain URLs; use reference_images with role \"style\". Appended after reference_images and counted in the same limit.",
+            "maxItems": 9,
             "type": "array",
             "items": {
               "type": "string",
@@ -1013,9 +1042,21 @@
             "maxLength": 100
           },
           "brief": {
-            "description": "Optional direction for the carousel type and look, e.g. \"5-step how-to, dark minimal, big numbers\".",
+            "description": "Optional direction for the carousel type and look, e.g. \"5-step how-to, dark minimal, big numbers, @img1 on slide 1\". Mention reference_images as @img1, @img2… to place them.",
             "type": "string",
-            "maxLength": 600
+            "maxLength": 4000
+          },
+          "page_numbers": {
+            "description": "Draw a page number (\"01 / 06\") on every slide, styled to the design. Defaults to the brand kit's setting (on without a kit).",
+            "type": "boolean"
+          },
+          "quality": {
+            "description": "Image quality: \"high\" (default, best detail) or \"medium\" (faster). Also used for edit_carousel unless it passes its own.",
+            "type": "string",
+            "enum": [
+              "high",
+              "medium"
+            ]
           }
         },
         "required": [
@@ -1063,7 +1104,7 @@
     {
       "name": "edit_carousel",
       "title": "Edit carousel",
-      "description": "Change a ready carousel in plain language (e.g. \"Shorten slide 3\", \"Use warmer colors\"), optionally with an image_url from upload_media. Only the requested change is applied; status becomes \"editing\". Generation takes about a minute: call get_carousel every ~10 seconds until status is \"ready\" (or \"failed\"). Consumes AI credits.",
+      "description": "Change a ready carousel in plain language (e.g. \"Shorten slide 3\", \"Use warmer colors\"), optionally with image_urls from upload_media and a quality (high or medium; defaults to the carousel's). Only the requested change is applied; status becomes \"editing\". Generation takes about a minute: call get_carousel every ~10 seconds until status is \"ready\" (or \"failed\"). Consumes AI credits.",
       "annotations": {
         "title": "Edit carousel",
         "readOnlyHint": false,
@@ -1096,10 +1137,27 @@
             "maxLength": 1000,
             "description": "The change in plain language, e.g. \"Shorten slide 3\" or \"Make the headlines bolder\"."
           },
+          "image_urls": {
+            "description": "Optional Larkpulse-hosted images (up to 9, from upload_media) to use as visual direction or to place on slides. Refer to them in the message as you would to attachments (\"put the second image on slide 3\").",
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
           "image_url": {
-            "description": "Optional Larkpulse-hosted image (from upload_media) to use as visual direction or to place on a slide.",
+            "description": "Deprecated: one image; use image_urls.",
             "type": "string",
             "maxLength": 2048
+          },
+          "quality": {
+            "description": "Image quality for this edit: \"high\" or \"medium\". Defaults to the quality the carousel was made with.",
+            "type": "string",
+            "enum": [
+              "high",
+              "medium"
+            ]
           }
         },
         "required": [
@@ -1112,7 +1170,7 @@
     {
       "name": "list_image_options",
       "title": "List image options",
-      "description": "List what generate_image can use in a workspace: image models (id, credit cost per image, aspect ratios, max images, max reference images; the default is GPT Image 2.5 Fast at medium quality), style names and brand kits. Free (does not count against the monthly quota).",
+      "description": "List what generate_image can use in a workspace: image models (id, credit cost per image, aspect ratios, max images, max reference images; the default is GPT Image 2.5 Fast at medium quality), style names, brand kits and reference roles. Free (does not count against the monthly quota).",
       "annotations": {
         "title": "List image options",
         "readOnlyHint": true,
@@ -1139,7 +1197,7 @@
     {
       "name": "generate_image",
       "title": "Generate image",
-      "description": "Generate AI images from a prompt and/or the post they are for, with optional style, on-image caption, aspect ratio, reference images (from upload_media, mention as @img1…) and brand kit. Returns an image job id with status \"generating\". Generation usually takes 10–60 seconds: call get_image every ~5 seconds until status is \"ready\" (or \"failed\"). When ready, pass image.post_args.media_urls into save_draft / schedule_post / publish_post. Images are also saved to the workspace Media Library. Consumes AI credits per image.",
+      "description": "Generate AI images from a prompt and/or the post they are for, with optional style, on-image caption, aspect ratio, reference images by role (reference_images: style to match, character, logo or image to use; from upload_media, mention as @img1…) and brand kit. Returns an image job id with status \"generating\". Generation usually takes 10–60 seconds: call get_image every ~5 seconds until status is \"ready\" (or \"failed\"). When ready, pass image.post_args.media_urls into save_draft / schedule_post / publish_post. Images are also saved to the workspace Media Library. Consumes AI credits per image.",
       "annotations": {
         "title": "Generate image",
         "readOnlyHint": false,
@@ -1197,8 +1255,37 @@
             "type": "string",
             "maxLength": 200
           },
+          "reference_images": {
+            "description": "Optional reference images by role. Mention them in the prompt as @img1, @img2… in this order. Together with reference_image_urls, limited to the model's max_reference_images.",
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "maxLength": 2048,
+                  "description": "A Larkpulse-hosted image (from upload_media)."
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "style",
+                    "character",
+                    "logo",
+                    "image"
+                  ],
+                  "description": "\"style\": an image whose look to match (never its content). \"character\": a person to feature. \"logo\": a logo to place. \"image\": anything else to use (a product, a scene)."
+                }
+              },
+              "required": [
+                "url",
+                "role"
+              ]
+            }
+          },
           "reference_image_urls": {
-            "description": "Optional Larkpulse-hosted images (from upload_media) to use as references — people, products, logos or style. Mention them in the prompt as @img1, @img2… Limited to the model's max_reference_images.",
+            "description": "Optional Larkpulse-hosted images (from upload_media) to use as references without a role, appended after reference_images. Mention them in the prompt as @img1, @img2…",
             "maxItems": 8,
             "type": "array",
             "items": {
@@ -1732,7 +1819,7 @@
             "maxLength": 2048
           },
           "media_urls": {
-            "description": "Optional array of Larkpulse-hosted media URLs for multi-media posts (carousels, multi-photo, slideshows). Takes precedence over media_url. Max items per platform: Instagram 10, Threads 20, Facebook 10, LinkedIn 20, TikTok 35, Pinterest 1, YouTube 1 (over-limit is rejected; use platform_overrides to send fewer). X 4: extra items are not rejected, X posts the first 4 and the response includes a warning.",
+            "description": "Optional array of Larkpulse-hosted media URLs for multi-media posts (carousels, multi-photo, slideshows). Takes precedence over media_url. Max items per platform: Instagram 10, Threads 20, Facebook 10, LinkedIn 20, TikTok 35, Pinterest 5 (2–5 images make a carousel Pin; same shape, no video), YouTube 1 (over-limit is rejected; use platform_overrides to send fewer). X 4: extra items are not rejected, X posts the first 4 and the response includes a warning.",
             "maxItems": 35,
             "type": "array",
             "items": {
@@ -1774,6 +1861,10 @@
           "pinterest_link": {
             "description": "Optional destination URL a Pinterest pin links to when clicked. Must be a valid http(s) URL. Pinterest accounts only.",
             "type": "string"
+          },
+          "pinterest_ai_disclosure": {
+            "description": "Optional: true labels the Pin as AI-generated or modified (Pinterest's AI_MODIFIED disclosure). Off by default and never set automatically; set it only when the user asks. Pinterest accounts only.",
+            "type": "boolean"
           },
           "thread": {
             "description": "Optional thread chain for Threads/X: the main text/media is post #1 and each item here is published as a chained reply. Requires at least one selected Threads or X account. Per-item character limits apply (see textLimit in list_accounts); other targeted platforms receive only the first post.",
@@ -2073,7 +2164,7 @@
             "maxLength": 2048
           },
           "media_urls": {
-            "description": "Optional array of Larkpulse-hosted media URLs for multi-media posts (carousels, multi-photo, slideshows). Takes precedence over media_url. Max items per platform: Instagram 10, Threads 20, Facebook 10, LinkedIn 20, TikTok 35, Pinterest 1, YouTube 1 (over-limit is rejected; use platform_overrides to send fewer). X 4: extra items are not rejected, X posts the first 4 and the response includes a warning.",
+            "description": "Optional array of Larkpulse-hosted media URLs for multi-media posts (carousels, multi-photo, slideshows). Takes precedence over media_url. Max items per platform: Instagram 10, Threads 20, Facebook 10, LinkedIn 20, TikTok 35, Pinterest 5 (2–5 images make a carousel Pin; same shape, no video), YouTube 1 (over-limit is rejected; use platform_overrides to send fewer). X 4: extra items are not rejected, X posts the first 4 and the response includes a warning.",
             "maxItems": 35,
             "type": "array",
             "items": {
@@ -2115,6 +2206,10 @@
           "pinterest_link": {
             "description": "Optional destination URL a Pinterest pin links to when clicked. Must be a valid http(s) URL. Pinterest accounts only.",
             "type": "string"
+          },
+          "pinterest_ai_disclosure": {
+            "description": "Optional: true labels the Pin as AI-generated or modified (Pinterest's AI_MODIFIED disclosure). Off by default and never set automatically; set it only when the user asks. Pinterest accounts only.",
+            "type": "boolean"
           },
           "thread": {
             "description": "Optional thread chain for Threads/X: the main text/media is post #1 and each item here is published as a chained reply. Requires at least one selected Threads or X account. Per-item character limits apply (see textLimit in list_accounts); other targeted platforms receive only the first post.",
@@ -2414,7 +2509,7 @@
             "maxLength": 2048
           },
           "media_urls": {
-            "description": "Optional array of Larkpulse-hosted media URLs for multi-media posts (carousels, multi-photo, slideshows). Takes precedence over media_url. Max items per platform: Instagram 10, Threads 20, Facebook 10, LinkedIn 20, TikTok 35, Pinterest 1, YouTube 1 (over-limit is rejected; use platform_overrides to send fewer). X 4: extra items are not rejected, X posts the first 4 and the response includes a warning.",
+            "description": "Optional array of Larkpulse-hosted media URLs for multi-media posts (carousels, multi-photo, slideshows). Takes precedence over media_url. Max items per platform: Instagram 10, Threads 20, Facebook 10, LinkedIn 20, TikTok 35, Pinterest 5 (2–5 images make a carousel Pin; same shape, no video), YouTube 1 (over-limit is rejected; use platform_overrides to send fewer). X 4: extra items are not rejected, X posts the first 4 and the response includes a warning.",
             "maxItems": 35,
             "type": "array",
             "items": {
@@ -2456,6 +2551,10 @@
           "pinterest_link": {
             "description": "Optional destination URL a Pinterest pin links to when clicked. Must be a valid http(s) URL. Pinterest accounts only.",
             "type": "string"
+          },
+          "pinterest_ai_disclosure": {
+            "description": "Optional: true labels the Pin as AI-generated or modified (Pinterest's AI_MODIFIED disclosure). Off by default and never set automatically; set it only when the user asks. Pinterest accounts only.",
+            "type": "boolean"
           },
           "thread": {
             "description": "Optional thread chain for Threads/X: the main text/media is post #1 and each item here is published as a chained reply. Requires at least one selected Threads or X account. Per-item character limits apply (see textLimit in list_accounts); other targeted platforms receive only the first post.",
@@ -2766,7 +2865,7 @@
             "maxLength": 2048
           },
           "media_urls": {
-            "description": "Optional array of Larkpulse-hosted media URLs for multi-media posts (carousels, multi-photo, slideshows). Takes precedence over media_url. Max items per platform: Instagram 10, Threads 20, Facebook 10, LinkedIn 20, TikTok 35, Pinterest 1, YouTube 1 (over-limit is rejected; use platform_overrides to send fewer). X 4: extra items are not rejected, X posts the first 4 and the response includes a warning.",
+            "description": "Optional array of Larkpulse-hosted media URLs for multi-media posts (carousels, multi-photo, slideshows). Takes precedence over media_url. Max items per platform: Instagram 10, Threads 20, Facebook 10, LinkedIn 20, TikTok 35, Pinterest 5 (2–5 images make a carousel Pin; same shape, no video), YouTube 1 (over-limit is rejected; use platform_overrides to send fewer). X 4: extra items are not rejected, X posts the first 4 and the response includes a warning.",
             "maxItems": 35,
             "type": "array",
             "items": {
@@ -2808,6 +2907,10 @@
           "pinterest_link": {
             "description": "Optional destination URL a Pinterest pin links to when clicked. Must be a valid http(s) URL. Pinterest accounts only.",
             "type": "string"
+          },
+          "pinterest_ai_disclosure": {
+            "description": "Optional: true labels the Pin as AI-generated or modified (Pinterest's AI_MODIFIED disclosure). Off by default and never set automatically; set it only when the user asks. Pinterest accounts only.",
+            "type": "boolean"
           },
           "thread": {
             "description": "Optional thread chain for Threads/X: the main text/media is post #1 and each item here is published as a chained reply. Requires at least one selected Threads or X account. Per-item character limits apply (see textLimit in list_accounts); other targeted platforms receive only the first post.",

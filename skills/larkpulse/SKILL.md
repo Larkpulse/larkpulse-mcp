@@ -111,11 +111,11 @@ Tips:
 
 ## AI images
 
-`list_image_options` (free) → `generate_image` (`prompt` and/or `post_text`, optional `model_id` — default GPT Image 2.5 Fast at medium quality — `aspect_ratio`, `num_images` 1–4, `style`, `caption` (text rendered on the image), `reference_image_urls` from `upload_media` (mention them in the prompt as @img1, @img2…), `brand_kit_id`) → poll `get_image` (free) about every 5 s until `status: "ready"` → pass `image.post_args.media_urls` into `save_draft` / `schedule_post` / `publish_post`. Images are also saved to the Media Library. Consumes AI credits per image (plus a small prompt-writing cost when `post_text` is set).
+`list_image_options` (free) → `generate_image` (`prompt` and/or `post_text`, optional `model_id` — default GPT Image 2.5 Fast at medium quality — `aspect_ratio`, `num_images` 1–4, `style`, `caption` (text rendered on the image), `reference_images` from `upload_media` as `[{ url, role }]` with role `style` (a look to match, never its content), `character`, `logo` or `image` (mention them in the prompt as @img1, @img2… in that order; plain `reference_image_urls` still work), `brand_kit_id`) → poll `get_image` (free) about every 5 s until `status: "ready"` → pass `image.post_args.media_urls` into `save_draft` / `schedule_post` / `publish_post`. Images are also saved to the Media Library. Consumes AI credits per image (plus a small prompt-writing cost when `post_text` is set).
 
 ## AI carousels
 
-`list_carousel_options` (free) → `generate_carousel` (text, slide_count 3–9, optional style_id or my_style_id (the workspace's own styles) / brand_preset_id / cta_preset_id, optional `brief` such as "5-step how-to, dark minimal", optional `reference_image_urls` (up to 4 uploaded images of a design to match)) → poll `get_carousel` (free) about every 10 s until `status: "ready"` → pass `carousel.post_args` into `save_draft` / `schedule_post` / `publish_post` together with text and account_ids. `edit_carousel` applies plain-language changes to a ready carousel. Both generate and edit consume AI credits.
+`list_carousel_options` (free) → `generate_carousel` (text, slide_count 3–9 — at most 5 if the post goes to Pinterest, optional style_id or my_style_id (the workspace's own styles) / brand_preset_id / cta_preset_id, optional `brief` such as "5-step how-to, dark minimal, @img1 on slide 1", optional `reference_images` `[{ url, role }]` (up to 9 in total: role `style` = a design to match, one PDF allowed as the only style; `character` / `logo` / `image` = people, logos or images to feature where the brief places them as @img1, @img2…; brand-kit assets follow as the next numbers), `page_numbers` (default: the brand kit's setting, on without a kit), `quality` `high` (default) or `medium`) → poll `get_carousel` (free) about every 10 s until `status: "ready"` → pass `carousel.post_args` into `save_draft` / `schedule_post` / `publish_post` together with text and account_ids (plus `pinterest_board_id` for a Pinterest account: the slides become one carousel Pin). `edit_carousel` applies plain-language changes to a ready carousel, optionally with up to 9 `image_urls` from upload_media and a `quality`. Both generate and edit consume AI credits.
 
 ## First comments / continuations
 
@@ -183,7 +183,7 @@ one channel only. To strip a shared default image for one platform, set
 `clear_media: true` on that override (cannot combine with `media_url` or `media_urls`).
 
 **Media limits per post:** Instagram 10, Facebook 10, Threads 20, LinkedIn 20, TikTok 35,
-Pinterest 1, YouTube 1. Over the limit is rejected — use `platform_overrides.<platform>.media_urls`
+Pinterest 5 (2–5 same-shape images = a carousel Pin; a video must be on its own), YouTube 1. Over the limit is rejected — use `platform_overrides.<platform>.media_urls`
 to send fewer items to that platform. X allows 4: extra items are not rejected, X posts the first 4
 and the response includes a `warnings` entry (tell the user).
 
@@ -197,9 +197,12 @@ Pinterest account is targeted. Flow:
    to get the boards. Pick a board `id` — ask the user which board if it's ambiguous.
 3. Call `save_draft` / `publish_post` / `schedule_post` / `add_to_category` with:
    - the Pinterest `account_id` in `account_ids`,
-   - a `media_url` (Pinterest **requires** an image or video — attach media first),
+   - a `media_url` (Pinterest **requires** an image or video — attach media first), or
+     2–5 `media_urls` for a **carousel Pin**,
    - `pinterest_board_id` set to the chosen board id,
-   - optionally `pinterest_link` (a valid http(s) URL the pin clicks through to).
+   - optionally `pinterest_link` (a valid http(s) URL the pin clicks through to),
+   - optionally `pinterest_ai_disclosure: true` to label the Pin as AI-generated or modified.
+     Off by default and never set automatically — only when the user asks.
 
 Notes:
 - Only **one** Pinterest account can be targeted per post, because a board id belongs to a
@@ -211,10 +214,15 @@ Notes:
   telling you to call `list_pinterest_boards` first — it won't post.
 - The post `text` becomes the pin title/description; a media_url is mandatory (text-only pins
   aren't supported).
+- **Carousel Pins:** 2–5 images, all the same aspect ratio, no video (a video is pinned on its
+  own). More than 5, a video mixed with images, or mixed shapes is rejected — send fewer items
+  with `platform_overrides.pinterest.media_urls`. An AI carousel for Pinterest needs
+  `slide_count` ≤ 5.
 
 ## Example queries
 
 - "List my Pinterest boards and pin this image to the 'Recipes' board."
+- "Make a 5-slide carousel from this post and pin it to my 'Garden tips' board."
 - "Show my Larkpulse workspaces and channels."
 - "How did my workspace perform last month? Break it down by account."
 - "What's scheduled this week?"
