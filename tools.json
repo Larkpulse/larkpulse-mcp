@@ -18,7 +18,7 @@
         ]
       }
     ],
-    "version": "1.2.0",
+    "version": "1.3.0",
     "websiteUrl": "https://www.larkpulse.com",
     "endpoint": "https://app.larkpulse.com/api/mcp",
     "transport": "streamable-http",
@@ -1862,6 +1862,11 @@
             "description": "Optional destination URL a Pinterest pin links to when clicked. Must be a valid http(s) URL. Pinterest accounts only.",
             "type": "string"
           },
+          "pinterest_title": {
+            "description": "Optional Pin title (max 100 characters). Defaults to the post's first line. Pinterest accounts only.",
+            "type": "string",
+            "maxLength": 100
+          },
           "pinterest_ai_disclosure": {
             "description": "Optional: true labels the Pin as AI-generated or modified (Pinterest's AI_MODIFIED disclosure). Off by default and never set automatically; set it only when the user asks. Pinterest accounts only.",
             "type": "boolean"
@@ -2207,6 +2212,11 @@
             "description": "Optional destination URL a Pinterest pin links to when clicked. Must be a valid http(s) URL. Pinterest accounts only.",
             "type": "string"
           },
+          "pinterest_title": {
+            "description": "Optional Pin title (max 100 characters). Defaults to the post's first line. Pinterest accounts only.",
+            "type": "string",
+            "maxLength": 100
+          },
           "pinterest_ai_disclosure": {
             "description": "Optional: true labels the Pin as AI-generated or modified (Pinterest's AI_MODIFIED disclosure). Off by default and never set automatically; set it only when the user asks. Pinterest accounts only.",
             "type": "boolean"
@@ -2551,6 +2561,11 @@
           "pinterest_link": {
             "description": "Optional destination URL a Pinterest pin links to when clicked. Must be a valid http(s) URL. Pinterest accounts only.",
             "type": "string"
+          },
+          "pinterest_title": {
+            "description": "Optional Pin title (max 100 characters). Defaults to the post's first line. Pinterest accounts only.",
+            "type": "string",
+            "maxLength": 100
           },
           "pinterest_ai_disclosure": {
             "description": "Optional: true labels the Pin as AI-generated or modified (Pinterest's AI_MODIFIED disclosure). Off by default and never set automatically; set it only when the user asks. Pinterest accounts only.",
@@ -2907,6 +2922,11 @@
           "pinterest_link": {
             "description": "Optional destination URL a Pinterest pin links to when clicked. Must be a valid http(s) URL. Pinterest accounts only.",
             "type": "string"
+          },
+          "pinterest_title": {
+            "description": "Optional Pin title (max 100 characters). Defaults to the post's first line. Pinterest accounts only.",
+            "type": "string",
+            "maxLength": 100
           },
           "pinterest_ai_disclosure": {
             "description": "Optional: true labels the Pin as AI-generated or modified (Pinterest's AI_MODIFIED disclosure). Off by default and never set automatically; set it only when the user asks. Pinterest accounts only.",

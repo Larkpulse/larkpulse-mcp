@@ -201,6 +201,7 @@ Pinterest account is targeted. Flow:
      2–5 `media_urls` for a **carousel Pin**,
    - `pinterest_board_id` set to the chosen board id,
    - optionally `pinterest_link` (a valid http(s) URL the pin clicks through to),
+   - optionally `pinterest_title` (max 100 characters; defaults to the post's first line),
    - optionally `pinterest_ai_disclosure: true` to label the Pin as AI-generated or modified.
      Off by default and never set automatically — only when the user asks.
 
@@ -212,7 +213,7 @@ Notes:
   single post fans out to one Pinterest account + other platforms.
 - If you target a Pinterest account without `pinterest_board_id`, the tool returns an error
   telling you to call `list_pinterest_boards` first — it won't post.
-- The post `text` becomes the pin title/description; a media_url is mandatory (text-only pins
+- The post `text` becomes the pin description, and its first line the title unless you pass `pinterest_title`; a media_url is mandatory (text-only pins
   aren't supported).
 - **Carousel Pins:** 2–5 images, all the same aspect ratio, no video (a video is pinned on its
   own). More than 5, a video mixed with images, or mixed shapes is rejected — send fewer items
